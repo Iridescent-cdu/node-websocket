@@ -27,6 +27,7 @@ class MyWebsocket extends EventEmitter {
       socket.write(resHeaders)
 
       socket.on('data',(data)=>{
+        this.processData(data)
         this.emit('data')
       })
 
@@ -34,6 +35,39 @@ class MyWebsocket extends EventEmitter {
         this.emit('close')
       })
     })
+  }
+  
+  processData(data){
+    const byte1 = bufferData.readUInt8(0)
+    let opcode = byte1 & 0x0f
+
+    const byte2 = bufferData.readUInt8(1)
+    const str2 = byte2.toString(2)
+    const MASK  = str2[0]
+
+    let curByteIndex = 2 
+
+    let payloadLength = parseInt(str2.substring(1),2)
+
+    if(payloadLength === 126){
+      payloadLength = bufferData.readUInt16BE(2)
+      curByteIndex += 2
+    }else if(payloadLength === 127){
+      payloadLength = bufferData.readBigUint64BE(2)
+      curByteIndex += 8
+    }
+
+    let realData = null
+
+    if(MASK){
+      const maskKey = bufferData.slice(curByteIndex,curByteIndex + 4)
+      curByteIndex += 4
+      const payloadData = bufferData.slice(curByteIndex, curByteIndex + payloadLength)
+      realData = handleMask(maskKey,payloadData)
+    }
+
+    this.handleRealData(opcode,realData)
+
   }
 }
 
