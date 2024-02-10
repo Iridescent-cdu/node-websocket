@@ -1,6 +1,6 @@
 const { EventEmitter } = require('events')
 const http = require('http')
-const { hashKey } = require('./utils')
+const { hashKey,handleMask } = require('./utils')
 
 class MyWebsocket extends EventEmitter {
   constructor(options){
@@ -36,7 +36,7 @@ class MyWebsocket extends EventEmitter {
       })
     })
   }
-  
+
   processData(data){
     const byte1 = bufferData.readUInt8(0)
     let opcode = byte1 & 0x0f
