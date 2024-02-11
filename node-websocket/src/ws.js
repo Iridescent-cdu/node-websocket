@@ -69,6 +69,20 @@ class MyWebsocket extends EventEmitter {
     this.handleRealData(opcode,realData)
 
   }
+  
+  handleRealData(opcode, realDataBuffer) {
+      switch (opcode) {
+        case OPCODES.TEXT:
+          this.emit('data', realDataBuffer.toString('utf8'));
+          break;
+        case OPCODES.BINARY:
+          this.emit('data', realDataBuffer);
+          break;
+        default:
+          this.emit('close');
+          break;
+     }
+  } 
 }
 
 module.exports = MyWebsocket
