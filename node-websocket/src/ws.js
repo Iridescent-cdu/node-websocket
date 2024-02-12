@@ -83,6 +83,26 @@ class MyWebsocket extends EventEmitter {
           break;
      }
   } 
+  
+  send(data) {
+    let opcode;
+    let buffer;
+    if (Buffer.isBuffer(data)) {
+      opcode = OPCODES.BINARY;
+      buffer = data;
+    } else if (typeof data === 'string') {
+      opcode = OPCODES.TEXT;
+      buffer = Buffer.from(data, 'utf8');
+    } else {
+      console.error('暂不支持发送的数据类型')
+    }
+    this.doSend(opcode, buffer);
+  }
+
+  doSend(opcode, bufferDatafer) {
+    this.socket.write(encodeMessage(opcode, bufferDatafer));
+  }
+
 }
 
 module.exports = MyWebsocket
