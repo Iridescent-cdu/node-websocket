@@ -1,6 +1,6 @@
 const { EventEmitter } = require('events')
 const http = require('http')
-const { hashKey,handleMask } = require('./utils')
+const { hashKey, handleMask, OPCODES, encodeMessage } = require('./utils')
 
 class MyWebsocket extends EventEmitter {
   constructor(options){
@@ -27,8 +27,7 @@ class MyWebsocket extends EventEmitter {
       socket.write(resHeaders)
 
       socket.on('data',(data)=>{
-        this.processData(data)
-        this.emit('data')
+        this.processData(data);
       })
 
       socket.on('close',(error)=>{
@@ -37,7 +36,7 @@ class MyWebsocket extends EventEmitter {
     })
   }
 
-  processData(data){
+  processData(bufferData){
     const byte1 = bufferData.readUInt8(0)
     let opcode = byte1 & 0x0f
 
@@ -102,7 +101,6 @@ class MyWebsocket extends EventEmitter {
   doSend(opcode, bufferDatafer) {
     this.socket.write(encodeMessage(opcode, bufferDatafer));
   }
-
 }
 
 module.exports = MyWebsocket
