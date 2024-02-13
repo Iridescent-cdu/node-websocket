@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>WebSocket</title>
 </head>
 <body>
   <script>
@@ -11,9 +11,10 @@
     
     ws.onopen = function(){
       ws.send('发送数据')
+
       setTimeout(()=>{
         ws.send("发送数据2")
-      },3000)
+      }, 3000)
     }
 
     ws.onmessage = function(event){
@@ -21,7 +22,7 @@
     }
 
     ws.onclose = function(){
-
+      console.log('close')  
     }
   </script>
 </body>
