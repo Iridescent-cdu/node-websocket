@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nest Websocket</title>
+</head>
+<body>
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>
+  <script>
+    const socket = io('http://localhost:3000')
+
+    socket.on('connect',()=>{
+      console.log('Connected')
+
+      socket.emit('findAllAaa', response =>
+          console.log('findAllAaa', response)
+      )
+
+      socket.emit('findOneAaa', 1, response =>
+        console.log('findOneAaa', response)
+      )
+
+      socket.emit('createAaa', {name: 'guang'},response =>
+        console.log('createAaa', response)
+      )
+
+      socket.emit('updateAaa',{id: 2, name: 'dong'},response =>
+        console.log('updateAaa', response)
+      )
+
+      socket.emit('removeAaa', 2,response =>
+        console.log('removeAaa', response)
+      )
+
+      socket.on('guang', (data) => {
+        console.log('guang', data)
+      })
+
+      socket.on('findOneAaa', (data) => {
+        console.log('findOneAaa', data)
+      })
+    })
+
+    socket.on('disconnect',()=>{
+      console.log('Disconnected')
+    })
+  </script>
+</body>
+</html>
