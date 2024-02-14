@@ -2,18 +2,31 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
+  WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
 import { UpdateAaaDto } from './dto/update-aaa.dto';
 import { Observable } from 'rxjs';
+import { Server } from 'socket.io';
 
 @WebSocketGateway()
 export class AaaGateway {
   constructor(private readonly aaaService: AaaService) {}
 
+  @WebSocketServer()
+  server: Server;
+
   @SubscribeMessage('createAaa')
-  create(@MessageBody() createAaaDto: CreateAaaDto) {
+  create(
+    @MessageBody() createAaaDto: CreateAaaDto,
+    @ConnectedSocket() server: Server,
+  ) {
+    server.emit('guang', 777);
+
+    this.server.emit('guang', 777);
+
     return this.aaaService.create(createAaaDto);
   }
 
