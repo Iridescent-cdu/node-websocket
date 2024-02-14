@@ -4,6 +4,9 @@ import {
   MessageBody,
   WebSocketServer,
   ConnectedSocket,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
@@ -12,11 +15,19 @@ import { Observable } from 'rxjs';
 import { Server } from 'socket.io';
 
 @WebSocketGateway()
-export class AaaGateway {
-  constructor(private readonly aaaService: AaaService) {}
-
+export class AaaGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
+
+  constructor(private readonly aaaService: AaaService) {}
+
+  afterInit(server: Server) {}
+
+  handleConnection(client: Server, ...args: any[]) {}
+
+  handleDisconnect(client: Server) {}
 
   @SubscribeMessage('createAaa')
   create(
